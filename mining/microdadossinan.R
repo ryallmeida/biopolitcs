@@ -292,9 +292,12 @@ p1 <- ggplot(df_long, aes(x = ano,
                           fill = variavel)) +
   
   annotate("rect",
-           xmin = 2017, xmax = 2025,
-           ymin = -Inf, ymax = Inf,
-           alpha = 0.5, fill = "grey80") +
+           xmin = 2017, 
+           xmax = 2025,
+           ymin = -Inf, 
+           ymax = Inf,
+           alpha = 0.5, 
+           fill = "grey80") +
   
   geom_col(position = "stack", width = 0.75) +
   
@@ -321,7 +324,9 @@ p1 <- ggplot(df_long, aes(x = ano,
   
   theme_minimal(base_size = 15) +
   theme(
-    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+    axis.text.x = element_text(angle = 90, 
+                               vjust = 0.5, 
+                               hjust = 1),
     legend.position = "top",
     legend.title = element_text(face = "bold"),
     panel.grid = element_blank()
@@ -334,10 +339,13 @@ p1 <- ggplot(df_long, aes(x = ano,
 
 p_final <- p1 +
   
-  # Linha da sua estimativa (vermelha e pontilhada)
+  # Linha da minha estimativa (vermelha e pontilhada)
   geom_line(
     data = df_final,
-    aes(x = ano, y = coef_insiden * coef, color = "Estimativa", linetype = "Estimativa"),
+    aes(x = ano, 
+        y = coef_insiden * coef, 
+        color = "Estimativa", 
+        linetype = "Estimativa"),
     linewidth = 1.2,
     inherit.aes = FALSE
   ) +
@@ -345,21 +353,24 @@ p_final <- p1 +
   # Linha IBGE
   geom_line(
     data = df_final |> dplyr::filter(!is.na(incidencia_ibge)),
-    aes(x = ano, y = incidencia_ibge * coef, color = "IBGE", linetype = "IBGE"),
+    aes(x = ano, 
+        y = incidencia_ibge * coef, 
+        color = "IBGE", 
+        linetype = "IBGE"),
     linewidth = 1.2,
     inherit.aes = FALSE
   ) +
   
   # Definindo cores e tipos de linha na legenda
   scale_color_manual(
-    name = "Taxa de incidência",
+    name = "Coeficiêntes",
     values = c(
       "Estimativa" = "red",
       "IBGE" = "blue4"
     )
   ) +
   scale_linetype_manual(
-    name = "Taxa de incidência",
+    name = "Coeficiêntes",
     values = c(
       "Estimativa" = "dashed",
       "IBGE" = "solid"
