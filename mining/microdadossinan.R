@@ -248,18 +248,25 @@ view(df_final)
 
 df_long <- read.csv("C:/Users/ryall/Desktop/DDS/DADOS/assuntoparlamentar.csv")
 
-#view(df_final)
-df_final <-df_final[-41, ] 
+df_long <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/camaradata_long.csv")
+
+df_final <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/df_aids.csv")
+
 
 # -----------------------------------------------
 # 1) Garantindo tipos numéricos corretos
 # -----------------------------------------------
 
+dplyr::glimpse(df_final)
+
 df_long$ano   <- as.integer(df_long$ano)
 df_final$ano  <- as.integer(df_final$ano)
 
 df_final$coef_insiden    <- as.numeric(df_final$coef_insiden)
-df_final$incidencia_ibge <- as.numeric(df_final$incidencia_ibge)
+
+df_final$incidencia_ibge <- as.numeric(gsub(",", ".", df_final$incidencia_ibge))
+
+df_final <- df_final[-41, ] 
 
 # -----------------------------------------------
 # 2) Definição do coeficiente de escala
@@ -373,6 +380,10 @@ p_final <- p1 +
   )
 
 # Exibir
-p_final
+#view(df_final)
+
+print(p_final)
+
+print(p1)
 
 #ggsave("C:/Users/ryall/Downloads/parlamento&&aids.png", plot = p_final, width = 10, height = 6, dpi = 300)
