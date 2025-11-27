@@ -29,7 +29,6 @@ install.packages("remotes")
 remotes::install_github("rfsaldanha/read.dbc")
 library(read.dbc)
 
-
 # ==============================================================================
 # DADOS DOS SISTEMA DO AGRAVO DE NOTIFICAÇÕES, INFORMAÇÕES SOBRE HIV E AIDS EM CRIANÇAS E ADULTOS
 # ==============================================================================
