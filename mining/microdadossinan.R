@@ -251,6 +251,7 @@ df_long <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/ref
 
 df_final <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/df_aids.csv")
 
+contagem_prep <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/contagem_prep.csv")
 
 # -----------------------------------------------
 # 1) Garantindo tipos numéricos corretos
@@ -394,6 +395,118 @@ p_final <- p1 +
 
 print(p_final)
 
-print(p1)
-
 #ggsave("C:/Users/ryall/Downloads/parlamento&&aids.png", plot = p_final, width = 10, height = 6, dpi = 300)
+
+# =============================================================================
+# PLOTANDO USUÁRIOS DE PREP
+# # =============================================================================
+
+# Garantir ano como inteiro
+contagem_prep$Ano <- as.integer(contagem_prep$Ano)
+
+# Juntar com df_final pela coluna 'ano'
+prep_join <- contagem_prep |> 
+  dplyr::left_join(df_final, by = c("Ano" = "ano"))
+
+# Criar coeficiente por 100 mil habitantes
+prep_join <- prep_join |>
+  dplyr::mutate(
+    coef_prep = (Total_EmPrEP / populacao) * 100000
+  )
+
+# NA SÉRIE QUE EU EXTREI DO IBGE ESTAVA FALTANDO DADOS DA POPULAÇÃO RESIDENTE E ESTIMADA PARA OS ANOS DE 2022 E 2023
+#  PROCUREI NA INTERNET E VOU IMPUTÁ-LOS DE FORMA MANUAL NO BANDO DE DADOS ACIMA
+
+prep_join$populacao[5] <- 203062512 
+prep_join$populacao[6] <- 212583750
+
+# View(prep_join)
+# deu certo 
+
+# -----------------------------------------------
+# 5) Adicionar a terceira série ao gráfico
+# -----------------------------------------------
+
+p3 <- p_final +
+  
+  # Linha 1 — Estimativa
+  geom_line(
+    data = df_final,
+    aes(x = ano, 
+        y = coef_insiden * coef, 
+        color = "Estimativa", 
+        linetype = "Estimativa"),
+    linewidth = 1.2,
+    inherit.aes = FALSE
+  ) +
+  
+  # Linha 2 — IBGE
+  geom_line(
+    data = df_final |> filter(!is.na(incidencia_ibge)),
+    aes(x = ano, 
+        y = incidencia_ibge * coef, 
+        color = "IBGE", 
+        linetype = "IBGE"),
+    linewidth = 1.2,
+    inherit.aes = FALSE
+  ) +
+  
+  # Linha 3 — PrEP coef por 100 mil (cinza contínua)
+  geom_line(
+    data = prep_join |> filter(!is.na(coef_prep)),
+    aes(x = Ano,
+        y = coef_prep * coef),
+    color = "grey30",
+    linewidth = 1.2,
+    lineend = "round",
+    inherit.aes = FALSE
+  ) +
+  
+  # Label ao lado da linha PrEP
+  geom_text(
+    data = prep_join |> filter(!is.na(coef_prep)) |> slice_tail(n = 1),
+    aes(
+      x = Ano + 0.25,
+      y = coef_prep * coef,
+      label = "Em PrEP"
+    ),
+    color = "grey30",
+    hjust = 0,
+    vjust = 0.5,
+    size = 5,
+    fontface = "bold",
+    inherit.aes = FALSE
+  ) +
+  
+  # Legendas das duas primeiras linhas
+  scale_color_manual(
+    name = "Coeficientes",
+    values = c(
+      "Estimativa" = "red",
+      "IBGE" = "blue4"
+    )
+  ) +
+  scale_linetype_manual(
+    name = "Coeficientes",
+    values = c(
+      "Estimativa" = "dashed",
+      "IBGE" = "solid"
+    )
+  ) +
+  
+  scale_y_continuous(
+    name = "Quantidade de menções",
+    sec.axis = sec_axis(
+      ~ . / coef,
+      name = "Coeficientes de Incidência"
+    )
+  ) +
+  
+  theme(
+    axis.title.y.right = element_text(face = "bold"),
+    legend.position = "top"
+  )
+
+print(p3)
+
+# ggsave("C:/Users/ryall/Downloads/parlamento&&aids2.png", plot = p3, width = 10, height = 6, dpi = 300)
