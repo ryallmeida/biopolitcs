@@ -10,7 +10,7 @@
 # TRATAMENTO NOS MICRODADOS DO PAINEL PREP, DISPONÍVEL EM:
 # https://www.gov.br/aids/pt-br/indicadores-epidemiologicos/painel-de-monitoramento/painel-prep
 
-dados <- read.csv("C:/Users/ryall/Downloads/Dados_PrEP_transparencia/Banco_PrEP_usuarios.csv")
+dados <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/df_em_prep.csv")
 
 #   QUERO CONTA A VOLUMETRIA TOTAL DE OBSERVAÇÕES DE  USUÁRIOS EM PREP
 
@@ -39,3 +39,5 @@ em_prep <- data.frame(
 print(em_prep)
 
 #write.csv(dados, "C:/Users/ryall/Desktop/R/biopolitica/biopolitcs/dataframes/df_em_prep.csv")
+
+##write.csv(em_prep, "C:/Users/ryall/Desktop/R/biopolitica/biopolitcs/dataframes/contagem_prep.csv")
