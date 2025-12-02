@@ -186,12 +186,14 @@ glm_modelo <- glm(casos_totais ~ ano + offset(log(populacao)),
                   family = poisson(link = "log"),
                   data = dados_modelo)
 
+# UTILIZAR KKN PORQUE POISSON PRESSUPOE QUE A DISTRITUIÇÃO É DE POSSION E EU NÃO TENHO CERTEZA DA DISTRIBUIÇÃO DOS DADOS, USAR
+
 
 idx_na <- which(is.na(pop_aids_df$casos_totais))
 
 pop_aids_df$casos_totais_imput <- pop_aids_df$casos_totais  # inicializa coluna
 
-pop_aids_df$casos_totais_imput[idx_na] <- predict(glm_modelo, 
+pop_aids_df$casos_totais_imput[idx_na] <- predict(glm_modeYGlo, 
                                                   newdata = pop_aids_df[idx_na, ],
                                                   type = "response")  # valores preditos em escala de contagem
 
@@ -250,6 +252,7 @@ df_long <- read.csv("C:/Users/ryall/Desktop/DDS/DADOS/assuntoparlamentar.csv")
 df_long <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/camaradata_long.csv")
 
 df_final <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/df_aids.csv")
+view(df_final)
 
 contagem_prep <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/contagem_prep.csv")
 
@@ -417,8 +420,8 @@ prep_join <- prep_join |>
 # NA SÉRIE QUE EU EXTREI DO IBGE ESTAVA FALTANDO DADOS DA POPULAÇÃO RESIDENTE E ESTIMADA PARA OS ANOS DE 2022 E 2023
 #  PROCUREI NA INTERNET E VOU IMPUTÁ-LOS DE FORMA MANUAL NO BANDO DE DADOS ACIMA
 
-prep_join$populacao[5] <- 203062512 
-prep_join$populacao[6] <- 212583750
+  prep_join$populacao[5] <- 203062512 
+  prep_join$populacao[6] <- 212583750
 
 # View(prep_join)
 # deu certo 
