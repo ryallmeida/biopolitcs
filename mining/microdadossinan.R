@@ -23,9 +23,10 @@ pacman::p_load(tidyverse,
                devtools,
                readxl)
 
-install.packages("remotes")
+# install.packages("VIM", type = "binary")
 
-# PARA RODAR O CODIGO ABAIXO TIVE QUE BAIXAR O RTOOLS NA VERSÃO 4.5 
+
+# PARA RODAR O CODIGO ABAIXO TIVE QUE BAIXAR O RTOOLS NA VERSÃO 4.5
 remotes::install_github("rfsaldanha/read.dbc")
 library(read.dbc)
 
@@ -252,9 +253,62 @@ df_long <- read.csv("C:/Users/ryall/Desktop/DDS/DADOS/assuntoparlamentar.csv")
 df_long <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/camaradata_long.csv")
 
 df_final <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/df_aids.csv")
-view(df_final)
+# view(df_final)
+# O DF ACIMA ESTÁ COM ALGUNS NAS, QUE VAMOS TRATAR COM O ALGOTIRO KNN 
+# NAs: vetor de posições 23, 24, 34, 35, 38, 39 e 41
+
+df_final$casos_totais[24] <- NA
+
+library(VIM)
+
+df_final_knn <- df_final
+
+df_final_knn$casos_kNN <- kNN(
+  df_final,
+  variable = "casos_totais",
+  k = 5,
+  dist_var = c(
+    "ano",
+    "populacao",
+    "coef_insiden",
+    "incidencia_ibge"
+  )
+)$casos_totais
+
+df_final$casos_totais[23] <- 24245
+df_final$casos_totais[24] <- 24320
+df_final$casos_totais[34] <- 30941 
+df_final$casos_totais[35] <- 30941
+df_final$casos_totais[38] <- 30941
+df_final$casos_totais[39] <- 30941
+df_final <- df_final[-41, ] 
+
+df_final <- df_final %>%
+  mutate(
+    coef_kNN = (casos_totais / populacao) * 100000
+  )
+
+df_final <- df_final %>%
+  mutate(
+    variacao = (coef_kNN - coef_insiden / coef_insiden) * 100
+  )
+
+p0 <- ggplot(df_final, aes(x = ano, y = variacao)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 2) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1) +
+  labs(
+    x = "Ano",
+    y = "Variação (%)",
+    title = "Variação ao longo do tempo"
+  ) +
+  theme_minimal(base_size = 14)
+
+# print(p0)
 
 contagem_prep <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/contagem_prep.csv")
+
+df_conitec <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/conitec.csv")
 
 # -----------------------------------------------
 # 1) Garantindo tipos numéricos corretos
@@ -265,11 +319,9 @@ dplyr::glimpse(df_final)
 df_long$ano   <- as.integer(df_long$ano)
 df_final$ano  <- as.integer(df_final$ano)
 
-df_final$coef_insiden    <- as.numeric(df_final$coef_insiden)
+df_final$coef_insiden    <- as.numeric(df_final$coef_kNN)
 
 df_final$incidencia_ibge <- as.numeric(gsub(",", ".", df_final$incidencia_ibge))
-
-df_final <- df_final[-41, ] 
 
 # -----------------------------------------------
 # 2) Definição do coeficiente de escala
@@ -279,7 +331,7 @@ max_barras <- max(df_long$quantidade, na.rm = TRUE)
 
 max_taxas_validas <- max(
   df_final$coef_insiden,
-  df_final$incidencia_ibge,
+  df_final$coef_kNN,
   na.rm = TRUE
 )
 
@@ -420,8 +472,8 @@ prep_join <- prep_join |>
 # NA SÉRIE QUE EU EXTREI DO IBGE ESTAVA FALTANDO DADOS DA POPULAÇÃO RESIDENTE E ESTIMADA PARA OS ANOS DE 2022 E 2023
 #  PROCUREI NA INTERNET E VOU IMPUTÁ-LOS DE FORMA MANUAL NO BANDO DE DADOS ACIMA
 
-  prep_join$populacao[5] <- 203062512 
-  prep_join$populacao[6] <- 212583750
+prep_join$populacao[5] <- 203062512 
+prep_join$populacao[6] <- 212583750
 
 # View(prep_join)
 # deu certo 
@@ -513,3 +565,217 @@ p3 <- p_final +
 print(p3)
 
 # ggsave("C:/Users/ryall/Downloads/parlamento&&aids2.png", plot = p3, width = 10, height = 6, dpi = 300)
+
+
+# =============================================================================
+# COM OS DADOS DO CONITEC
+# =============================================================================
+df_anos <- df_conitec %>%
+  mutate(
+    ano_protocolo = year(ymd(Data.protocolo)),
+    ano_decisao   = year(ymd(Data.decisão)),
+    ano = coalesce(ano_protocolo, ano_decisao)
+  )
+
+df_ano_sum <- df_anos %>%
+  group_by(ano) %>%
+  summarise(
+    total_hiv  = sum(qtd_hiv, na.rm = TRUE),
+    total_aids = sum(qtd_aids, na.rm = TRUE),
+    total_prep = sum(qtd_prep, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+df_conitec <- df_ano_sum %>%
+  tidyr::pivot_longer(
+    cols = starts_with("total"),
+    names_to = "categoria",
+    values_to = "contagem"
+  )
+
+df_conitec$fonte <- "Conitec"
+
+df_camara <- df_long
+df_camara $fonte <- "camara"
+
+df_conitec_long <- df_ano_sum %>% 
+  pivot_longer(
+    cols = c(total_hiv, total_aids, total_prep),
+    names_to = "variavel",
+    values_to = "quantidade"
+  ) %>% 
+  mutate(
+    variavel = case_when(
+      variavel == "total_hiv"  ~ "qtd_hiv",
+      variavel == "total_aids" ~ "qtd_aids",
+      variavel == "total_prep" ~ "qtd_prep",
+      TRUE ~ variavel
+    ),
+    fonte = "Conitec"
+  )
+
+# ============================================================
+# 1) BASE UNIFICADA (Câmara + Conitec)
+# ============================================================
+
+colnames(df_conitec)[colnames(df_conitec) == "categoria"] <- "variavel"
+colnames(df_conitec)[colnames(df_conitec) == "contagem"] <- "quantidade"
+
+df5 <- bind_rows(
+  df_camara %>% select(ano, variavel, quantidade, fonte),
+  df_conitec %>% select(ano, variavel, quantidade, fonte)
+) %>%
+  mutate(
+    grupo = interaction(fonte, variavel, sep = "_")
+  )
+
+
+# ============================================================
+# 2) Preparar coeficiente de escala
+# ============================================================
+
+max_barras <- max(df5$quantidade, na.rm = TRUE)
+
+df_final$incidencia_ibge <- as.double(df_final$incidencia_ibge)
+
+max_taxas <- max(
+  df_final$taxa_100k,
+  df_final$coef_kNN,
+  na.rm = TRUE
+)
+
+coef <- max_barras / max_taxas
+
+df5 <- df5 |>
+  mutate(
+    grupo = case_when(
+      fonte == "camara"  & variavel == "qtd_hiv"   ~ "Camara_qtd_hiv",
+      fonte == "camara"  & variavel == "qtd_aids"  ~ "Camara_qtd_aids",
+      fonte == "camara"  & variavel == "qtd_prep"  ~ "Camara_qtd_prep",
+      
+      fonte == "Conitec" & variavel == "total_hiv"   ~ "Conitec_qtd_hiv",
+      fonte == "Conitec" & variavel == "total_aids"  ~ "Conitec_qtd_aids",
+      fonte == "Conitec" & variavel == "total_prep"  ~ "Conitec_qtd_prep",
+      
+      TRUE ~ NA_character_
+    )
+  )
+
+
+df_final$poisson_z <- scale(df_final$coef_insiden)
+df_final$knn_z     <- scale(df_final$coef_kNN)
+# ELES LITERALMENTE CALCULARAM O MESMO VALOR
+
+# ============================================================
+# 3) GRÁFICO ÚNICO FINAL
+# ============================================================
+p_unico <- ggplot() +
+
+# ------------------------------------------------
+# DESTAQUE CINZA ENTRE 2017 E 2025
+# ------------------------------------------------
+annotate("rect",
+         xmin = 2017 - 0.5,
+         xmax = 2025 + 0.5,
+         ymin = -Inf,
+         ymax = Inf,
+         fill = "grey90",
+         alpha = 0.5) +
+  
+# ------------------------------------------------
+# BARRAS EMPILHADAS
+# ------------------------------------------------
+geom_col(
+  data = df5,
+  aes(
+    x = ano,
+    y = quantidade,
+    fill = grupo
+  ),
+  position = "stack",
+  width = 0.8
+) +
+  
+  scale_fill_viridis_d(
+    name = "Fluxos das soluções (Policy Stream)\n       (Indicador, Primeval Soup)",
+    option = "magma",
+    end = 0.95,
+    labels = c(
+      "Camara_qtd_hiv"   = "HIV — Câmara",
+      "Camara_qtd_aids"  = "Aids — Câmara",
+      "Camara_qtd_prep"  = "PrEP — Câmara",
+      "Conitec_qtd_hiv"  = "HIV — Conitec",
+      "Conitec_qtd_aids" = "Aids — Conitec",
+      "Conitec_qtd_prep" = "PrEP — Conitec"
+    )
+  ) +
+  
+  # ------------------------------------------------
+# LINHA 1 — Estimativa Poisson
+# ------------------------------------------------
+#geom_line(data = df_final,aes(x = ano, y = coef_insiden ,color = "Poisson",linetype = "Poisson"),linewidth = 1.3) +
+  
+  # ------------------------------------------------
+# LINHA 2 — Estimativa KNN (AJUSTE AQUI SE O NOME NÃO FOR ESTE)
+# ------------------------------------------------
+geom_line(
+  data = df_final |> filter(!is.na(coef_kNN)),
+  aes(
+    x = ano,
+    y = coef_kNN * coef,
+    color = "KNN",
+    linetype = "KNN"
+  ),
+  linewidth = 1.3
+) +
+  
+  # ------------------------------------------------
+# ESCALA DE CORES/TIPOS LINHA
+# ------------------------------------------------
+
+scale_color_manual(
+  name = "\n       Incidência de Aids\n(Indicador, Problem Stream)",
+  values = c("KNN" = "red4")
+) +
+  scale_linetype_manual(
+    name = "\n       Incidência de Aids\n(Indicador, Problem Stream)",
+    values = c("KNN" = "solid")
+  ) +
+  theme(
+    legend.title = element_text(size = 8, face = "plain"),
+    legend.text  = element_text(size = 7)
+  ) +
+
+  # ------------------------------------------------
+# EIXOS
+# ------------------------------------------------
+scale_x_continuous(
+  breaks = seq(min(df5$ano), max(df5$ano), 1),
+  expand = expansion(mult = c(0.01, 0.08))
+) +
+  
+  scale_y_continuous(
+    name = "Quantidade de proposições",
+    sec.axis = sec_axis(
+      ~ . / coef,
+      name = "Coeficientes de Incidência"
+    )
+  ) +
+  
+# ------------------------------------------------
+# TEMA
+# ------------------------------------------------
+theme_minimal(base_size = 15) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5),
+    legend.position = "top",
+    legend.title = element_text(face = "bold"),
+    panel.grid = element_blank()
+  ) +
+  
+  labs(
+    x = "Ano",
+    title = ""
+  )
+
+p_unico

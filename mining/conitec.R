@@ -16,7 +16,9 @@ if(!require("pacman")){
 pacman::p_load(tidyverse,
                fs,
                stringi,
-               tidyr)
+               tidyr, 
+               lubridate,
+               viridis)
 
 # ===========================================================================
 
@@ -127,3 +129,66 @@ df3 <- df_filtrado %>%
 
 # write.csv(df3, "C:/Users/ryall/Desktop/R/biopolitica/biopolitcs/dataframes/conitec.csv", row.names = FALSE)
 
+# =========================================================
+
+df <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/conitec.csv")
+
+# usa ano do protocolo como principal, e se faltar pega o da decisão
+
+df_anos <- df %>%
+  mutate(
+    ano_protocolo = year(ymd(Data.protocolo)),
+    ano_decisao   = year(ymd(Data.decisão)),
+    ano = coalesce(ano_protocolo, ano_decisao)
+  )
+
+# somando a quantidade de menções por ano
+
+df_ano_sum <- df_anos %>%
+  group_by(ano) %>%
+  summarise(
+    total_hiv  = sum(qtd_hiv, na.rm = TRUE),
+    total_aids = sum(qtd_aids, na.rm = TRUE),
+    total_prep = sum(qtd_prep, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# REESTRUTURAÇÃO DOS DADOS
+
+df_ano_sum_long <- df_ano_sum %>%
+  pivot_longer(cols = starts_with("total"),
+               names_to = "categoria",
+               values_to = "contagem")
+
+# =============================================================================
+# 5. GRAFICOS
+# =============================================================================
+
+# GRAFICO DE BARRAS COM A QUANTIDADE DE MENÇÕES
+
+df_long2 <- df_ano_sum %>%
+  tidyr::pivot_longer(
+    cols = starts_with("total"),
+    names_to = "categoria",
+    values_to = "contagem"
+  )
+
+df_long$categoria <- dplyr::recode(df_long2$categoria,
+                                   total_hiv  = "HIV",
+                                   total_aids = "AIDS",
+                                   total_prep = "PrEP")
+
+ggplot(df_long2, aes(x = ano, y = contagem, fill = categoria)) +
+  geom_col(position = "stack") +
+  scale_fill_viridis_d(option = "C", direction = 1) +
+  theme_minimal(base_size = 15) +
+  labs(
+    title = "Citações Anuais – HIV, AIDS e PrEP",
+    x = "Ano",
+    y = "Número de citações",
+    fill = "Categoria"
+  ) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  )
