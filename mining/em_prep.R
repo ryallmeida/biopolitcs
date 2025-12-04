@@ -11,15 +11,17 @@ if(!require("pacman")){
   install.packages("pacman")
 }
 
-pacman::p_load(tidyverse, viridis)
+pacman::p_load(tidyverse, 
+               viridis)
 
 # TRATAMENTO NOS MICRODADOS DO PAINEL PREP, DISPONÍVEL EM:
 # https://www.gov.br/aids/pt-br/indicadores-epidemiologicos/painel-de-monitoramento/painel-prep
 
 dispensas <- read.csv("C:/Users/ryall/Downloads/Dados_PrEP_transparencia/Banco_PrEP_dispensas.csv")
 
-usuarios <- read.csv("C:/Users/ryall/Downloads/Dados_PrEP_transparencia/Banco_PrEP_usuarios.csv")
+# OS BANCO DE DADOS SÃO EQUIVALENTES: usuarios = dados
 
+usuarios <- read.csv("C:/Users/ryall/Downloads/Dados_PrEP_transparencia/Banco_PrEP_usuarios.csv")
 dados <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/df_em_prep.csv")
 
 #   QUERO CONTA A VOLUMETRIA TOTAL DE OBSERVAÇÕES DE  USUÁRIOS EM PREP
@@ -128,6 +130,7 @@ dados_long <- usuarios %>%
 # Detectar "Voltou": marcar a PRIMEIRA vez que a pessoa está Em_PrEP
 # depois de ter tido ao menos um "Descontinuou" em anos anteriores.
 # -------------------------------------------------
+
 dados_com_volta <- dados_long %>%
   group_by(.row_id) %>%
   arrange(ano) %>%
@@ -165,7 +168,7 @@ proporcoes$status <- factor(
   levels = c("Em_PrEP", "Voltou", "Descontinuou")
 )
 
-ggplot(proporcoes, aes(
+p1 <- ggplot(proporcoes, aes(
   x = prop,
   y = factor(ano, levels = sort(unique(ano), decreasing = TRUE)),
   fill = status
@@ -199,6 +202,55 @@ ggplot(proporcoes, aes(
     panel.grid.minor = element_blank()
   )
 
+
+print(p1)
+
+
+p2 <- ggplot(proporcoes, aes(
+  x = prop,
+  y = factor(ano, levels = sort(unique(ano), decreasing = TRUE)),
+  fill = status
+)) +
+  geom_bar(
+    stat = "identity",
+    position = "stack",
+    color = NA,
+    width = 0.6
+  ) +
+  geom_text(
+    aes(
+      label = paste0(round(prop, 1), "%")
+    ),
+    position = position_stack(vjust = 0.5),  # centra o texto na parte da barra
+    color = "white",
+    size = 3.3,
+    fontface = "bold"
+  ) +
+  scale_fill_viridis_d(
+    option = "rocket",
+    direction = -1,
+    begin = 0.15,
+    end = 0.85,
+    name = "Situação",
+    labels = c(
+      "Em_PrEP" = "Em PrEP",
+      "Voltou" = "Retorno à PrEP",
+      "Descontinuou" = "Descontinuou"
+    )
+  ) +
+  scale_x_continuous(expand = c(0,0), limits = c(0, 100)) +
+  labs(
+    x = "Proporção (%)",
+    y = "Ano"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+print(p2)
+
 # CRIAÇÃO DO ESPECTRO
 
 # Supondo que proporcoes tem status e ano
@@ -215,7 +267,7 @@ proporcoes <- proporcoes %>%
     )
   )
 
-ggplot(proporcoes, aes(
+p3 <- ggplot(proporcoes, aes(
   x = prop,
   y = factor(ano, levels = sort(unique(ano), decreasing = TRUE)),
   fill = score
@@ -238,3 +290,5 @@ ggplot(proporcoes, aes(
     panel.grid.major.y = element_blank(),
     panel.grid.minor = element_blank()
   )
+
+print(p3)
