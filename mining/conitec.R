@@ -9,7 +9,7 @@
 
 # UTILIZANDO A API DO SENADO FEDERAL PARA MAPEAR MENSÕES E PROPOSIÇÕES QUE CITEM PREP, HIV E AIDS
 
-if(!require("pacman")){
+if(!require("pacman")) {
   install.packages("pacman")
 }
 
@@ -22,7 +22,7 @@ pacman::p_load(tidyverse,
 
 # ===========================================================================
 
-dados <- readxl::read_excel("C:/Users/ryall/Downloads/copy2_of_pb_painel_demandas_conitec_20251112.xlsx")
+# dados <- readxl::read_excel("C:/Users/ryall/Downloads/copy2_of_pb_painel_demandas_conitec_20251112.xlsx")
 
 # =============================================================================
 # 1. FILTRAR LINHAS QUE CONTENHAM QUALQUER TERMO NA TABELA
@@ -192,3 +192,77 @@ ggplot(df_long2, aes(x = ano, y = contagem, fill = categoria)) +
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank()
   )
+
+
+# =============================================================================
+# ANÁLISE DESCRITIVA DOS DADOS
+# =============================================================================
+
+dplyr::glimpse(df)
+
+# TRANSFORMANDO A LEITURA DE DADOS
+
+df$Origem <- as.factor(df$Origem)
+df$Data.protocolo <- lubridate::ymd(df$Data.protocolo)
+df$Tipo.de.Tecnologia <- as.factor(df$Tipo.de.Tecnologia)
+df$Tema.da.Saúde    <- as.factor(df$Tema.da.Saúde)
+df$Demandante    <- as.factor(df$Demandante)
+df$Motivo.da.solicitação    <- as.factor(df$Motivo.da.solicitação)
+df$Data.decisão <- lubridate::ymd(df$Data.decisão)
+
+# --------------------------------
+
+pie(prop.table(table(df$Origem)))
+prop.table(table(df$Origem))
+# Externa  Interna 
+# 0.137931 0.862069 
+
+pie(prop.table(table(df$Tipo.de.Tecnologia)))
+prop.table(table(df$Tipo.de.Tecnologia))
+#  Medicamento Procedimento      Produto 
+#   0.86206897   0.10344828   0.03448276 
+
+pie(prop.table(table(df$Tema.da.Saúde)))
+prop.table(table(df$Tema.da.Saúde))
+#  Hematologia Infectologia 
+#   0.03448276   0.96551724 
+
+pie(prop.table(table(df$Demandante)))
+prop.table(table(df$Demandante))
+
+# Gilead Sciences Farmacêutica do Brasil 
+# 0.03448276 
+
+# GlaxoSmithKline Brasil 
+# 0.06896552 
+
+# Merck Sharp & Dohme Farmacêutica 
+# 0.03448276 
+
+# Secretaria de Atenção à Saúde SAS/MS 
+# 0.03448276 
+
+# Secretaria de Ciência, Tecnologia e Insumos Estratégicos SCTIE/MS 
+# 0.03448276 
+
+# Secretaria de Vigilância em Saúde e Ambiente – SVSA 
+# 0.03448276 
+
+# Secretaria de Vigilância em Saúde e Ambiente SVSA/MS 
+# 0.20689655 
+
+# Secretaria de Vigilância em Saúde SVS/MS 
+# 0.55172414 
+
+pie(prop.table(table(df$Motivo.da.solicitação)))
+prop.table(table(df$Motivo.da.solicitação))
+
+# Ampliação de Uso         
+# 0.1724138
+
+# Exclusão 
+# 0.2413793 
+
+#Incorporação 
+# 0.5862069 
+
