@@ -324,7 +324,7 @@ readr::write_csv(
 )
 
 dados <- readr::read_csv(
-  "C:/Users/ryall/Downloads/dados_conitec.csv",,
+  "C:/Users/ryall/Downloads/dados_conitec.csv",
   show_col_types = FALSE
 )
 
@@ -392,13 +392,48 @@ df_mensal <- df_mensal %>%
     )
   )
 
+# ==============================================================================
+# TERCEIRO CHECKPOINT
+# ==============================================================================
+
+
+readr::write_csv(
+  df_mensal,
+  "C:/Users/ryall/Desktop/R/biopolitica/biopolitcs/dataframes/cp_conitec_prop.csv",
+  na = "",
+  quote = "needed"
+)
+
+df_mensal <- readr::read_csv(
+  "https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/cp_conitec_prop.csv",
+  show_col_types = FALSE
+)
+
+# ==============================================================================
+# ==============================================================================
+
 periodos <- data.frame(
   inicio = as.Date(c("2017-02-12", "2017-06-18", "2017-05-25", "2017-05-13")),
   fim    = as.Date(c("2017-03-19", "2017-07-09", "2017-06-15", "2017-06-01"))
 )
 
 y_max <- max(df_mensal$n, na.rm = TRUE)
-periodos$y <- y_max * c(1.15, 1.10, 1.05, 1.20) 
+periodos$y <- y_max * c(1.20, 1.10, 1.05, 1.20) 
+
+df_mensal <- df_mensal %>% 
+  dplyr::select(-label)
+
+df_mensal <- df_mensal %>%
+  mutate(
+    label = ifelse(
+      perc >= 35 | perc == 90,
+      paste0(round(perc, 0), "%"),
+      NA
+    )
+  )
+
+# ==============================================================================
+# ==============================================================================
 
 
 ggplot(df_mensal, aes(x = semana, y = n, fill = concordancia)) +
@@ -430,15 +465,15 @@ ggplot(df_mensal, aes(x = semana, y = n, fill = concordancia)) +
         "Discussão do PCDT \n PrEP, Tenofovir associado a entricitabina", 
         "HIV", 
         "Raltegravir", 
-        "PCDT \n Aids em Crianças e Adolescentes"
+        "PCDT, Aids em Crianças e Adolescentes"
       )
     ),
     inherit.aes = FALSE,
     vjust = 1.5,
-    size = 3,
+    size = 5,
     color = "grey30"
   ) +
-  scale_fill_viridis_d(option = "cividis") +
+  scale_fill_viridis_d(option = "rocket") +
   scale_x_date(
     date_breaks = "2 week",
     date_labels = "%d/%m/%Y"
@@ -450,7 +485,9 @@ ggplot(df_mensal, aes(x = semana, y = n, fill = concordancia)) +
     title = ""
   ) +
   theme_minimal() +
-  theme(
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
     axis.text.x = element_text(angle = 90, 
                                vjust = 0.5, 
                                hjust = 0.5,
