@@ -498,3 +498,4 @@ ggplot(df_mensal, aes(x = semana, y = n, fill = concordancia)) +
 
 
 
+

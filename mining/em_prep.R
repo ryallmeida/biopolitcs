@@ -17,12 +17,10 @@ pacman::p_load(tidyverse,
 # TRATAMENTO NOS MICRODADOS DO PAINEL PREP, DISPONÍVEL EM:
 # https://www.gov.br/aids/pt-br/indicadores-epidemiologicos/painel-de-monitoramento/painel-prep
 
-dispensas <- read.csv("C:/Users/ryall/Downloads/Dados_PrEP_transparencia/Banco_PrEP_dispensas.csv")
-
-# OS BANCO DE DADOS SÃO EQUIVALENTES: usuarios = dados
-
-usuarios <- read.csv("C:/Users/ryall/Downloads/Dados_PrEP_transparencia/Banco_PrEP_usuarios.csv")
-dados <- read.csv("https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/df_em_prep.csv")
+dados <- readr::read_csv(
+  "https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/df_em_prep.csv",
+  show_col_types = FALSE
+)
 
 #   QUERO CONTA A VOLUMETRIA TOTAL DE OBSERVAÇÕES DE  USUÁRIOS EM PREP
 
@@ -48,7 +46,7 @@ em_prep <- data.frame(
   Total_EmPrEP = contagem_por_ano
 )
 
-print(em_prep)
+# print(em_prep)
 
 #write.csv(dados, "C:/Users/ryall/Desktop/R/biopolitica/biopolitcs/dataframes/df_em_prep.csv")
 
@@ -58,6 +56,7 @@ print(em_prep)
 # MINERAÇÃO DE DADOS 1
 # =============================================================================
 
+usuarios <- dados
 
 long <- usuarios |>
   pivot_longer(
@@ -108,7 +107,7 @@ cols <- paste0("EmPrEP_", anos)
 # -------------------------------------------------
 # A) Se cada LINHA é um indivíduo 
 # -------------------------------------------------
-dados_long <- usuarios %>%
+dados_long <- dados %>%
   # garante um id por linha (se já houver coluna ID, substitua)
   mutate(.row_id = row_number()) %>%
   # seleciona só as colunas-year (ajuste se tiver outras colunas)
@@ -155,6 +154,7 @@ dados_com_volta <- dados_long %>%
 # -------------------------------------------------
 # Calcular proporções por ano EXCLUINDO NAs (=vazios)
 # -------------------------------------------------
+
 proporcoes <- dados_com_volta %>%
   filter(!is.na(status)) %>%         # exclui células vazias/NA do denominador
   group_by(ano, status) %>%
@@ -167,6 +167,26 @@ proporcoes$status <- factor(
   proporcoes$status,
   levels = c("Em_PrEP", "Voltou", "Descontinuou")
 )
+
+# ==============================================================================
+# CHECKPOINT
+# ==============================================================================
+
+readr::write_csv(
+  proporcoes,
+  "C:/Users/ryall/Desktop/R/biopolitica/biopolitcs/dataframes/proporcoes_emprep.csv",
+  na = "",
+  quote = "needed"
+)
+
+
+
+dados <- readr::read_csv(
+  "C:/Users/ryall/Downloads/dados_conitec.csv",,
+  show_col_types = FALSE
+)
+
+
 
 p1 <- ggplot(proporcoes, aes(
   x = prop,
