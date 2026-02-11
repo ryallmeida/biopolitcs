@@ -1,0 +1,172 @@
+---
+title: "Profilaxia Pré-Exposição: notas sobre uma ideia que atingiu seu tempo como tecnologia de prevenção no Sistema Único de Saúde"
+author: "Ryan Pablo Alves de Almeida Pires\\thanks{Laboratório de Estudo da Sexualidade Humana, Departamento de Psicologia, Universidade Federal de Pernambuco, Recife, Brasil. Contato: ryallmeida@gmail.com}"
+
+date: "2026-02-10"
+
+output:
+  bookdown::pdf_document2:
+    toc: false
+    latex_engine: xelatex
+
+bibliography: referencia.bib
+csl: C:/Users/ryall/Desktop/R/biopolitica/biopolitcs/associacao-brasileira-de-normas-tecnicas.csl
+
+header-includes:
+  - \usepackage{ragged2e}
+  - \usepackage{caption}
+  - \usepackage{indentfirst}
+  - \justifying
+  - \setlength{\parindent}{1.25cm}
+  - \captionsetup{justification=centering}
+---
+
+
+# Resumo
+
+Este trabalho se propõe a analisar  a dimensão política da Profilaxia Pré-Exposição (PrEP) como política pública no Sistema Único de Saúde brasileiro (SUS) e, como também, tecnologia de prevenção ao Vírus da Imunodeficiência Humana (HIV) sobre a ótica da Teoria do Agendamento (*Agenda Setting Theory*) proposta por Kingdon (1995) e a Teoria de Coalizões de Defesa (*Advocacy Coalition Framework*) proposta por Sabatier (2007). Assim, debruça-se especificamente pelos processos pré-decisórios desta política. 
+
+
+**Palavras-chaves.** Profilaxia Pré-exposição; Teoria do Agendamento; Coalizões de Defesa; Políticas Públicas; Sistema Único de Saúde.
+
+
+# Por que tecnologias de prevenção importam?
+
+Esse trabalho investiga os efeitos biopolíticos da expansão do acesso gratuito da Profilaxia Pré-exposição (PrEP) para o HIV enquanto medida de prevenção para homens que  fazem sexo com homens (HSHs), focando em jovens (18-29 anos), residentes na RMR. No Brasil, HSH é uma das categorias mais afetadas pelo HIV/Aids [@brasil2024boletim]. Uma pesquisa realizada em 2016 mostra uma prevalência média do HIV entre HSHs nas cidades participantes do estudo de 18,4%; 21,5% em Recife estima-se que entre a população geral  brasileira a prevalência seja de 0,6% [@kerr2018hiv].  
+
+Assim, rever a história social e as maneiras pelas quais a resposta à epidemia de HIV mudou ao longo do tempo, pode ser útil para pensar em mudanças em termos de uma série de “ondas”, uma metáfora para diferentes fases ou períodos históricos, que nos inundaram à medida que tentamos entender a epidemia e a resposta que ela gerou. [@parker2024epidemias; @calazans2023refazendo]
+
+Então, assume-se que epidemias e pandemias também são características sociais 
+(bem como culturais, econômicas e políticas) e são muito mais “do que simples eventos virais”. Ao respondê-las, é importante reconhecer que a transmissão viral paralelamente, e às vezes até mesmo correndo à frente dela, são processos socioculturais, econômicos e políticos profundamente enraizados, que podem ser mais poderosos do que (e certamente muito diferentes) das ondas de infecção. É, nesse sentido, social, portanto, que procura-se compreender, no que segue, o que Parker compreende como ondas distintas da resposta social 
+e política ao HIV e à AIDS (e não simplesmente ondas de transmissão viral, como propõe a epidemiologia) (Parker, 2011; Parker, Aggleton, 2024, Paiva, 2021 *apud* @calazans2023refazendo) 
+
+Com uma maior sensibilização tomada em função do tempo, e uma ênfase nos direitos humanos e na luta contra o estigma e a discriminação, atinge-se o clímax no início da segunda onda da epidemia (Aggleton & Parker, 2002), e em sequência gradualmente começou a dar lugar ao que foi descrito como uma rebiomedicalização da epidemia global, incluindo um novo foco em métodos biomédicos para a prevenção e reparação do HIV/Aids, como a Profilaxia Pré-exposição [@aggleton2015moving; @parker20249]
+
+Nesse sentido, em 1988, com a promulgação da Constituição Federal brasileira, houve a descentralização do Sistema Único de Saúde, e é desse ponto que partimos: como e quando que a PrEP, torna-se uma consideração para uma política de manutenção de vidas brasileiras, mais especificamente a grupos mais vulnerabilizados à pandemia? É em meados de 2017, que a PrEP torna-se instrumento de biopoder ^[ Cf. Para uma discussão aprofundada sobre o conceito de biopoder, ver Foucault em História da Sexualidade, 
+Vol. 1: A Vontade de Saber, especialmente o capítulo "Direito de Morte e Poder sobre a Vida", no qual o autor explicita a passagem do poder soberano para as formas modernas de gestão da vida e dos corpos.], e passa a gerar políticas de vida dado o sistema de saúde altamente capilarizado, pois a mesma é inserida para uso no SUS de forma gratuita e há-se um crescimento exponencial no número de usuários *vide* Figura 1 ^[ Os dados utilizados provêm de painéis oficiais do Ministério da Saúde. Ver @brasil_painelprep_2026. Painel de monitoramento da PrEP.] e como também tem-se avançado na compreensão das vulnerabilidades adjacentes à epidemia.
+
+
+``` {r, echo = FALSE, fig.align='center', fig.cap = paste0("Distribuição dos casos de HIV por faixa etária (2026).","\\\\ ","\\textbf{Elaboração própria.} Pires, R.","\\\\[0.8em] ","Fonte: Ministério da Saúde. Departamento de HIV, Aids, Tuberculose, Hepatites Virais e Infecções Sexualmente Transmissíveis.")}
+
+pacman::p_load(tidyverse, 
+               viridis)
+
+teste <- readr::read_csv(
+  "https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/proporcoes_emprep.csv",
+  show_col_types = FALSE
+) %>%
+  mutate(
+    ano = as.integer(ano),
+    status = as.factor(status),
+    n = as.integer(n)
+  ) %>%
+  filter(!is.na(prop))   
+p2 <- ggplot(teste, aes(
+  x = prop,
+  y = factor(
+    ano,
+    levels = sort(unique(ano), decreasing = TRUE)
+  ),
+  fill = status
+)) +
+  geom_bar(
+    stat = "identity",
+    position = "stack",
+    width = 0.6
+  ) +
+  geom_text(
+    aes(label = paste0(round(prop, 1), "%")),
+    position = position_stack(vjust = 0.5),
+    color = "white",
+    size = 2,
+    fontface = "bold"
+  ) +
+  scale_fill_viridis_d(
+    option = "rocket",
+    direction = -1,
+    begin = 0.15,
+    end = 0.85,
+    name = "Situação",
+    labels = c(
+      Em_PrEP = "Em PrEP",
+      Voltou = "Retorno à PrEP",
+      Descontinuou = "Descontinuou"
+    )
+  ) +
+  scale_x_continuous(expand = c(0, 0)) +
+  coord_cartesian(xlim = c(0, 100)) +  
+  labs(
+    x = "Proporção (%)",
+    y = "Ano"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    # títulos dos eixos
+    axis.title.x = element_text(size = 8),
+    axis.title.y = element_text(size = 8),
+
+    # textos dos eixos (anos e proporções)
+    axis.text.x  = element_text(size = 8),
+    axis.text.y  = element_text(size = 8),
+
+    # título da legenda ("Situação")
+    legend.title = element_text(size = 8),
+
+    # itens da legenda (Em PrEP, Retorno, etc.)
+    legend.text  = element_text(size = 7)
+  )
+print(p2)
+
+
+```
+
+Ao discutir o conceito de vulnerabilidade, Ayres et al. [-@ayres2003conceito, p. 127] nos convidam a pensar para além do indivíduo isolado e, ao fazê-lo, reafirmam a relevância dos três componentes que estruturam essa noção: o individual, o coletivo e o programático. É justamente nesse último que o debate se adensa. Eles lembram que “quanto maior for o grau e a qualidade de compromisso, recurso, gerência e monitoramento de programas nacionais, regionais ou locais de prevenção e reparação relativo à infecção e ao adoecimento, maiores são as chances de canalizar os recursos sociopolíticos existentes, otimizar seu uso e identificar a necessidade de outros recursos, a fim de fortalecer os indivíduos diante da epidemia”. Em outras palavras: sem um aparato programático forte, o indivíduo permanece exposto, e o coletivo, desamparado.
+
+Esse ponto parece dialogar diretamente com uma das Teorias de Kingdon, 
+especialmente quando o autor nos provoca a olhar para a “agenda” como essa lista de temas que, em dado momento, se tornam alvo de séria atenção, tanto das autoridades quanto daqueles atores que orbitam o sistema político, ainda que fora do governo [@kingdon1984does, p. 222]. A pergunta incômoda que emerge é: por que certos temas entram nessa lista enquanto outros permanecem invisíveis? E aqui, talvez sem desejar assumir isso explicitamente, Kingdon e Ayres e seus colaboradores se encontram. 
+
+Se a vulnerabilidade depende de um componente programático robusto e se esse 
+componente, por sua vez, depende de decisões políticas sobre o que merece prioridade, então a essência da decisão, esse instante fugidio, quase opaco, torna-se o verdadeiro ponto cego da análise. Não por acaso, como observam diversos autores, ele permanece impenetrável para o observador, muitas vezes até mesmo para quem decide. Talvez seja precisamente por essa razão que as teorias positivas de formulação de políticas deslocam o olhar do momento da escolha em si e concentram-se nos processos pré e pós-decisão. Afinal, como diria Kingdon, trata-se de compreender “*an idea whose time has come*”, o instante em que uma ideia, antes marginal, encontra seu caminho para o centro da ação pública. 
+
+É nesse movimento que a análise de políticas se estrutura. De um lado, a 
+implementação, a avaliação, a aprendizagem e as dinâmicas das políticas públicas compõem o campo pós-decisão, vasto, complexo e, como lembra [@majone2006agendasetting, p. 228], cada vez mais explorado. De outro, a definição de problemas, a definição da agenda e a análise de viabilidade configuram os elementos essenciais da fase pré-decisão. É precisamente esse terreno, onde problemas competem por atenção, ideias disputam seu “tempo de vir” e atores tentam moldar o futuro possível que constitui o objeto de análise desse texto: os aspectos da da decisão, quando a Profilaxia Pré-exposição torna-se objeto de produção de políticas de vida. Assim, por que os *decision makers* prestam mais atenção a uma coisa e não a outra? Como suas agendas mudam com o tempo? E como eles filtram as suas escolhas a partir de um amplo território de alternativas? 
+
+Em sequência, a Teoria das Coalizões de Defesa [@sabatier2019advocacy] parte de três pilares que já anunciam seu desejo de tensionar nossa forma de enxergar o processo político: a suposição macro de que a política se  decidemajoritariamente dentro de subsistemas altamente especializados, mas nunca isolados do ambiente sociopolítico mais amplo; um modelo micro de indivíduo ancorado na psicologia, no qual crenças profundas estruturam preferências e comportamentos; e, no nível meso, a aposta de que a maneira mais fecunda de lidar com a multiplicidade de atores é agrupá-los em coalizões de defesa.  
+
+No fundo, o que o essa teoria nos propõe é observar o *policymaking* como um campo onde redes densas de especialistas disputam a tradução de crenças em política pública e onde mudança só acontece por caminhos bem mais tortuosos do que os manuais de administração pública gostariam de admitir. Ao delimitar o conceito de subsistema, ele nos toca para perceber que “será que realmente compreendemos de fato quem participa de um processo decisório?” O framework desmonta a fantasia do “triângulo de ferro” e revela um ecossistema mais amplo, no qual se-dá a formação de comunidades de prática que podem coexistir por décadas.
+
+Esse modelo insiste que definir o subsistema não é detalhe, mas o ponto seminal da investigação, é ali que se decide quem conversa com quem, quem disputa o quê e quais instituições moldam essas interações. 
+
+Assim, ao aproximarmos Sabatier de Kingdon, percebemos que ambos partem de uma intuição comum: processos decisórios não ocorrem no vácuo, mas em arenas delimitadas onde atores especializados interagem de forma relativamente estável. O “subsistema” de Sabatier, encontra seu paralelo na maneira como Kingdon descreve os *policy communities* e os *policy networks* que operam dentro do fluxo das alternativas. Em ambos os modelos, essas comunidades são responsáveis por filtrar ideias, estabilizar interpretações e construir soluções tecnicamente aceitáveis, ainda que nem sempre politicamente viáveis. A diferença é que Kingdon destaca a fluidez entre fluxos independentes  (*Problem Streams, Policy Streams e Political Streams*), enquanto Sabatier enfatiza a longevidade das coalizões e a estruturação mais profunda das crenças que orientam sua ação. No entanto, os dois convergem ao sugerir 
+que compreender “quem” compõem essas comunidades especializadas (e como elas se organizam) é crucial para explicar por que certas propostas conseguem avançar quando janelas de oportunidade se abrem, enquanto outras permanecem marginais por décadas.
+
+E, ao fazer isso, o framework assume uma postura menos ingênua: quem deseja explicar mudança precisa olhar além das decisões formais, interrogando fronteiras, sobreposições, equilíbrios instáveis e os choques (endogenos e exogenos) que abalam rotinas aparentemente estáveis. Esses modelos obrigam a aceitar que boa parte do conflito não nasce da informação em si, ou da ausência dela, mas das lentes profundas que organizam a percepção do mundo, estruturam a transitividade das preferências e alimentam desconfianças 
+mútuas.  
+
+Portanto, ao lado dos usos de preservativos interno e externo, e da testagem anti-HIV para mediar acordos sexuais entre os parceiros (conhecido também como ‘segurança negociada’), figuram como técnicas recomendadas pela saúde pública, as de base medicamentosa: as profilaxias pós e pré-exposição [@brasil2022diretrizesprep]. No Brasil, a PrEP se torna uma estratégia da 'prevenção combinada' apenas em finais de 2017 [@brasil2022diretrizesprep], mas foi pouco divulgada até 2021 [@santos2022profilaxia; @santos2023prep]
+
+A partir de 2022, começa uma difusão mais ampla, mencionada nas mídias tradicionais e redes sociais de internet, como nas últimas campanhas do Dia Mundial de Combate à Aids e de carnaval. Também é a partir de 2022 que 
+os HSHs entre 15 e 17 anos são incluídos na política de recebimento gratuito pelo SUS, sem a necessidade de consentimento dos pais [@brasil2022diretrizesprep]. 
+
+No momento atual, o uso cotidiano ou por demanda da PrEP, antecedendo as práticas sexuais, é, sem dúvidas, importante estratégia de controle da epidemia [@saopaulo2023reduzhiv], ao passo que contribui significativamente na reconfiguração de aspectos das práticas sexuais entre HSHs, uma vez que possibilita atividades sexuais sem o uso de preservativos [@santos2022profilaxia; @santos2023prep]. Por isso, ela tem gerado 
+muitas discussões entre profissionais de saúde, comunidade gay, ativistas e pesquisadores, não apenas porque não protege de outras ISTs, mas também pelos aspectos biopolíticos a ela relacionados, ou seja, como os aparatos biomédicos regulam os corpos e re-descrevem as culturas e as práticas sexuais dos HSH [@dean2024intimidadesmediadas].
+
+# "An Idea Whose Time Has Come": Como deu-se a janela de oportunidades? 
+
+Com entrada da Profilaxia Pré-Exposição na agenda governamental brasileira não pode ser explicada por um roteiro linear. Pelo contrário: o processo se revela como uma zona de fricção onde fluxos independentes colidem de forma contingente, ao mesmo tempo em que coalizões de defesa disputam crenças, interpretações e prioridades dentro de um subsistema altamente especializado. É nesse cenário tensionado que a PrEP se torna, progressivamente, uma ideia “cujo tempo finalmente havia chegado”.
+
+O ponto de partida repousa no fluxo do problema, ativado por indicadores que 
+expõem um descompasso entre discursos utópicos, abstrações imagéticas do que deve ser feito e práticas reais de prevenção. Os dados da Pesquisa Nacional de Saúde ^[ Os dados oficiais do Ministério da Saúde. Ver @brasil2023preservativo.] são exemplares: apenas 22,8% dos adultos sexualmente ativos usam preservativo em todas as relações, enquanto 59% não o utilizam nunca. Esse quadro não apenas evidencia a persistência de comportamentos de risco, mas revela a insuficiência de um modelo programático baseado na doutrina exclusiva da camisinha, fenômeno já descrito como “fadiga do preservativo” pelos interlocutores de [@castro2024incorporaccao]. Assim, o coeficiente de infecção não emerge apenas como estatística descritiva passível de generalização, mas como dado de narrativas: ele reativa um problema ao mostrar que o país convive com práticas sexuais desprotegidas sem oferecer, de forma robusta, alternativas de redução de danos. Em termos ayresianos, a vulnerabilidade programática se escancara, e quando o aparato programático falha, o indivíduo permanece exposto e o coletivo, desamparado. 
+
+Mas um problema só se torna politicamente relevante quando encontra aqueles que o enquadram. Pesquisadores, movimentos sociais e técnicos já articulavam, antes mesmo de 2014, a possibilidade de usar antirretrovirais como prevenção; contudo, foi a conjunção entre evidências acumuladas, pressão social e o reconhecimento explícito de um fracasso parcial do modelo preventivo tradicional que transformou o número frio em urgência pública. O Ministério da Saúde, ao protocolar na Conitec em setembro de 2016 a proposta de 
+incorporação do Truvada para uso preventivo, operou precisamente essa conversão. 
+
+
+Entretanto, como propõe Kingdon, o fluxo do problema não anda sozinho. Para que a agenda se mova, o fluxo das alternativas precisa estar pronto e, no caso da PrEP, ele já borbulhava na *primeval soup *das políticas públicas. Projetos como o PrEP Brasil^[ Em 2014, o MS, por meio da Fiocruz, do CRT-DST/AIDS- SP e da Faculdade de Medicina da USP, iniciou, entre outros projetos demonstrativos, o Projeto chamado “PrEP Brasil” para “avaliar a viabilidade da administração oral diária da combinação de medicamentos à HSH e mulheres transexuais em alto risco para HIV no SUS”. Foi o primeiro estudo demonstrativo da América Latina incluindo a população vulnerável em condições reais de atendimento no SUS. Ver mais em [@castro2024incorporaccao]  ] , estudos da Fiocruz e evidências internacionais consolidaram a viabilidade técnica da tecnologia. Organizações da sociedade civil com destaque no cenário nacional como ABIA, GAPA, Pela VIDDA, ainda que essa coalizão mostre-se divergentes em estratégias (vide Figura 2), convergem na defesa de sua incorporação como forma de ampliar o repertório preventivo. Entretanto, como propõe Kingdon, o fluxo do problema não anda sozinho. Para que a agenda se mova, o fluxo das alternativas precisa estar pronto e, no caso da PrEP, ele já borbulhava no "leque de opções" das políticas públicas. Projetos como o PrEP Brasil, estudos da Fiocruz e evidências internacionais consolidaram a viabilidade técnica da tecnologia. Organizações da sociedade civil com destaque no cenário nacional como ABIA, GAPA, Pela VIDDA, ainda que essa coalizão mostre-se divergentes em estratégias (*vide* Figura 2), convergem na defesa de sua incorporação como forma de ampliar o repertório preventivo.  
+
+
+
+
+# Agradecimentos
+
+# Referências

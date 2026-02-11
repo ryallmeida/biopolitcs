@@ -179,14 +179,12 @@ readr::write_csv(
   quote = "needed"
 )
 
-
-
-dados <- readr::read_csv(
-  "C:/Users/ryall/Downloads/dados_conitec.csv",,
+proporcoes <- readr::read_csv(
+  "https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/proporcoes_emprep.csv",
   show_col_types = FALSE
 )
 
-
+# ==============================================================================
 
 p1 <- ggplot(proporcoes, aes(
   x = prop,
@@ -225,10 +223,14 @@ p1 <- ggplot(proporcoes, aes(
 
 print(p1)
 
+# PARA O RELATÓRIO PARCIAL USEI O GRAFICO P2
+# ==============================================================================
 
 p2 <- ggplot(proporcoes, aes(
   x = prop,
-  y = factor(ano, levels = sort(unique(ano), decreasing = TRUE)),
+  y = factor(ano, 
+             levels = sort(unique(ano), 
+                           decreasing = TRUE)),
   fill = status
 )) +
   geom_bar(
@@ -243,7 +245,7 @@ p2 <- ggplot(proporcoes, aes(
     ),
     position = position_stack(vjust = 0.5),  # centra o texto na parte da barra
     color = "white",
-    size = 3.3,
+    size = 10,
     fontface = "bold"
   ) +
   scale_fill_viridis_d(
@@ -258,7 +260,8 @@ p2 <- ggplot(proporcoes, aes(
       "Descontinuou" = "Descontinuou"
     )
   ) +
-  scale_x_continuous(expand = c(0,0), limits = c(0, 100)) +
+  scale_x_continuous(expand = c(0,0), 
+                     limits = c(0, 100)) +
   labs(
     x = "Proporção (%)",
     y = "Ano"
@@ -270,45 +273,3 @@ p2 <- ggplot(proporcoes, aes(
   )
 
 print(p2)
-
-# CRIAÇÃO DO ESPECTRO
-
-# Supondo que proporcoes tem status e ano
-# Vamos criar "score" para cada status
-# Escala: 0 = péssimo (Descontinuou e não voltou), 0.5 = voltou, 1 = Em PrEP
-
-proporcoes <- proporcoes %>%
-  mutate(
-    score = case_when(
-      status == "Em_PrEP" ~ 1,
-      status == "Voltou" ~ 0.5,
-      status == "Descontinuou" ~ 0,
-      TRUE ~ NA_real_
-    )
-  )
-
-p3 <- ggplot(proporcoes, aes(
-  x = prop,
-  y = factor(ano, levels = sort(unique(ano), decreasing = TRUE)),
-  fill = score
-)) +
-  geom_bar(stat = "identity", position = "stack", color = NA) +
-  scale_fill_viridis_c(
-    option = "cividis",   # paleta contínua cividis
-    direction = 1,
-    begin = 0.15,
-    end = 0.85,
-    name = "Adesão à PrEP"
-  ) +
-  scale_x_continuous(expand = c(0,0), limits = c(0,100)) +
-  labs(
-    x = "Proporção (%)",
-    y = "Ano"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor = element_blank()
-  )
-
-print(p3)
