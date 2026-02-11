@@ -1,5 +1,6 @@
 ---
 title: "Profilaxia Pré-Exposição: notas sobre uma ideia que atingiu seu tempo como tecnologia de prevenção no Sistema Único de Saúde"
+
 author: "Ryan Pablo Alves de Almeida Pires\\thanks{Laboratório de Estudo da Sexualidade Humana, Departamento de Psicologia, Universidade Federal de Pernambuco, Recife, Brasil. Contato: ryallmeida@gmail.com}"
 
 date: "2026-02-10"
@@ -7,6 +8,7 @@ date: "2026-02-10"
 output:
   bookdown::pdf_document2:
     toc: false
+    number_sections: false
     latex_engine: xelatex
 
 bibliography: referencia.bib
@@ -16,11 +18,21 @@ header-includes:
   - \usepackage{ragged2e}
   - \usepackage{caption}
   - \usepackage{indentfirst}
+  - \usepackage{booktabs}
+  - \usepackage{tabularx}
+  - \usepackage{float}
+  - \usepackage{setspace}
+  - \usepackage{fancyhdr}
   - \justifying
+  - \singlespacing
   - \setlength{\parindent}{1.25cm}
   - \captionsetup{justification=centering}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \fancyfoot[R]{\thepage}
+  - \renewcommand{\headrulewidth}{0pt}
+  - \renewcommand{\footrulewidth}{0pt}
 ---
-
 
 # Resumo
 
@@ -32,7 +44,7 @@ Este trabalho se propõe a analisar  a dimensão política da Profilaxia Pré-Ex
 
 # Por que tecnologias de prevenção importam?
 
-Esse trabalho investiga os efeitos biopolíticos da expansão do acesso gratuito da Profilaxia Pré-exposição (PrEP) para o HIV enquanto medida de prevenção para homens que  fazem sexo com homens (HSHs), focando em jovens (18-29 anos), residentes na RMR. No Brasil, HSH é uma das categorias mais afetadas pelo HIV/Aids [@brasil2024boletim]. Uma pesquisa realizada em 2016 mostra uma prevalência média do HIV entre HSHs nas cidades participantes do estudo de 18,4%; 21,5% em Recife estima-se que entre a população geral  brasileira a prevalência seja de 0,6% [@kerr2018hiv].  
+Esse trabalho investiga os efeitos biopolíticos da expansão do acesso gratuito da Profilaxia Pré-exposição (PrEP) para o HIV enquanto medida de prevenção, HSH é uma das categorias mais afetadas pelo HIV/Aids [@brasil2024boletim]. Uma pesquisa realizada em 2016 mostra uma prevalência média do HIV entre HSHs nas cidades participantes do estudo de 18,4%; 21,5% em Recife estima-se que entre a população geral  brasileira a prevalência seja de 0,6% [@kerr2018hiv].  
 
 Assim, rever a história social e as maneiras pelas quais a resposta à epidemia de HIV mudou ao longo do tempo, pode ser útil para pensar em mudanças em termos de uma série de “ondas”, uma metáfora para diferentes fases ou períodos históricos, que nos inundaram à medida que tentamos entender a epidemia e a resposta que ela gerou. [@parker2024epidemias; @calazans2023refazendo]
 
@@ -151,21 +163,515 @@ os HSHs entre 15 e 17 anos são incluídos na política de recebimento gratuito 
 No momento atual, o uso cotidiano ou por demanda da PrEP, antecedendo as práticas sexuais, é, sem dúvidas, importante estratégia de controle da epidemia [@saopaulo2023reduzhiv], ao passo que contribui significativamente na reconfiguração de aspectos das práticas sexuais entre HSHs, uma vez que possibilita atividades sexuais sem o uso de preservativos [@santos2022profilaxia; @santos2023prep]. Por isso, ela tem gerado 
 muitas discussões entre profissionais de saúde, comunidade gay, ativistas e pesquisadores, não apenas porque não protege de outras ISTs, mas também pelos aspectos biopolíticos a ela relacionados, ou seja, como os aparatos biomédicos regulam os corpos e re-descrevem as culturas e as práticas sexuais dos HSH [@dean2024intimidadesmediadas].
 
-# "An Idea Whose Time Has Come": Como deu-se a janela de oportunidades? 
+# "An idea whose time has come": Como deu-se a janela de oportunidades? 
 
 Com entrada da Profilaxia Pré-Exposição na agenda governamental brasileira não pode ser explicada por um roteiro linear. Pelo contrário: o processo se revela como uma zona de fricção onde fluxos independentes colidem de forma contingente, ao mesmo tempo em que coalizões de defesa disputam crenças, interpretações e prioridades dentro de um subsistema altamente especializado. É nesse cenário tensionado que a PrEP se torna, progressivamente, uma ideia “cujo tempo finalmente havia chegado”.
 
 O ponto de partida repousa no fluxo do problema, ativado por indicadores que 
-expõem um descompasso entre discursos utópicos, abstrações imagéticas do que deve ser feito e práticas reais de prevenção. Os dados da Pesquisa Nacional de Saúde ^[ Os dados oficiais do Ministério da Saúde. Ver @brasil2023preservativo.] são exemplares: apenas 22,8% dos adultos sexualmente ativos usam preservativo em todas as relações, enquanto 59% não o utilizam nunca. Esse quadro não apenas evidencia a persistência de comportamentos de risco, mas revela a insuficiência de um modelo programático baseado na doutrina exclusiva da camisinha, fenômeno já descrito como “fadiga do preservativo” pelos interlocutores de [@castro2024incorporaccao]. Assim, o coeficiente de infecção não emerge apenas como estatística descritiva passível de generalização, mas como dado de narrativas: ele reativa um problema ao mostrar que o país convive com práticas sexuais desprotegidas sem oferecer, de forma robusta, alternativas de redução de danos. Em termos ayresianos, a vulnerabilidade programática se escancara, e quando o aparato programático falha, o indivíduo permanece exposto e o coletivo, desamparado. 
+expõem um descompasso entre discursos utópicos, abstrações imagéticas do que deve ser feito e práticas reais de prevenção. Os dados da Pesquisa Nacional de Saúde ^[ Os dados oficiais do Ministério da Saúde. Ver @brasil2023preservativo.] são exemplares: apenas 22,8% dos adultos sexualmente ativos usam preservativo em todas as relações, enquanto 59% não o utilizam nunca. Esse quadro não apenas evidencia a persistência de comportamentos de risco, mas revela a insuficiência de um modelo programático baseado na doutrina exclusiva da camisinha, fenômeno já descrito como “fadiga do preservativo” pelos interlocutores de Castro *et al.* [-@castro2024incorporaccao]. Assim, o coeficiente de infecção não emerge apenas como estatística descritiva passível de generalização, mas como dado de narrativas: ele reativa um problema ao mostrar que o país convive com práticas sexuais desprotegidas sem oferecer, de forma robusta, alternativas de redução de danos. Em termos ayresianos, a vulnerabilidade programática se escancara, e quando o aparato programático falha, o indivíduo permanece exposto e o coletivo, desamparado. 
 
 Mas um problema só se torna politicamente relevante quando encontra aqueles que o enquadram. Pesquisadores, movimentos sociais e técnicos já articulavam, antes mesmo de 2014, a possibilidade de usar antirretrovirais como prevenção; contudo, foi a conjunção entre evidências acumuladas, pressão social e o reconhecimento explícito de um fracasso parcial do modelo preventivo tradicional que transformou o número frio em urgência pública. O Ministério da Saúde, ao protocolar na Conitec em setembro de 2016 a proposta de 
 incorporação do Truvada para uso preventivo, operou precisamente essa conversão. 
 
 
-Entretanto, como propõe Kingdon, o fluxo do problema não anda sozinho. Para que a agenda se mova, o fluxo das alternativas precisa estar pronto e, no caso da PrEP, ele já borbulhava na *primeval soup *das políticas públicas. Projetos como o PrEP Brasil^[ Em 2014, o MS, por meio da Fiocruz, do CRT-DST/AIDS- SP e da Faculdade de Medicina da USP, iniciou, entre outros projetos demonstrativos, o Projeto chamado “PrEP Brasil” para “avaliar a viabilidade da administração oral diária da combinação de medicamentos à HSH e mulheres transexuais em alto risco para HIV no SUS”. Foi o primeiro estudo demonstrativo da América Latina incluindo a população vulnerável em condições reais de atendimento no SUS. Ver mais em [@castro2024incorporaccao]  ] , estudos da Fiocruz e evidências internacionais consolidaram a viabilidade técnica da tecnologia. Organizações da sociedade civil com destaque no cenário nacional como ABIA, GAPA, Pela VIDDA, ainda que essa coalizão mostre-se divergentes em estratégias (vide Figura 2), convergem na defesa de sua incorporação como forma de ampliar o repertório preventivo. Entretanto, como propõe Kingdon, o fluxo do problema não anda sozinho. Para que a agenda se mova, o fluxo das alternativas precisa estar pronto e, no caso da PrEP, ele já borbulhava no "leque de opções" das políticas públicas. Projetos como o PrEP Brasil, estudos da Fiocruz e evidências internacionais consolidaram a viabilidade técnica da tecnologia. Organizações da sociedade civil com destaque no cenário nacional como ABIA, GAPA, Pela VIDDA, ainda que essa coalizão mostre-se divergentes em estratégias (*vide* Figura 2), convergem na defesa de sua incorporação como forma de ampliar o repertório preventivo.  
+Entretanto, como propõe Kingdon, o fluxo do problema não anda sozinho. Para que a agenda se mova, o fluxo das alternativas precisa estar pronto e, no caso da PrEP, ele já borbulhava na *primeval soup* das políticas públicas. Projetos como o PrEP Brasil^[ Em 2014, o MS, por meio da Fiocruz, do CRT-DST/AIDS- SP e da Faculdade de Medicina da USP, iniciou, entre outros projetos demonstrativos, o Projeto chamado “PrEP Brasil” para “avaliar a viabilidade da administração oral diária da combinação de medicamentos à HSH e mulheres transexuais em alto risco para HIV no SUS”. Foi o primeiro estudo demonstrativo da América Latina incluindo a população vulnerável em condições reais de atendimento no SUS. Ver mais em @castro2024incorporaccao  ] , estudos da Fiocruz e evidências internacionais consolidaram a viabilidade técnica da tecnologia. Organizações da sociedade civil com destaque no cenário nacional como ABIA, GAPA, Pela VIDDA, ainda que essa coalizão mostre-se divergentes em estratégias (*vide* Figura 2), convergem na defesa de sua incorporação como forma de ampliar o repertório preventivo. Entretanto, como propõe Kingdon, o fluxo do problema não anda sozinho. Para que a agenda se mova, o fluxo das alternativas precisa estar pronto e, no caso da PrEP, ele já borbulhava no "leque de opções" das políticas públicas. Projetos como o PrEP Brasil, estudos da Fiocruz e evidências internacionais consolidaram a viabilidade técnica da tecnologia. Organizações da sociedade civil com destaque no cenário nacional como ABIA, GAPA, Pela VIDDA, ainda que essa coalizão mostre-se divergentes em estratégias conforme ilustra a Figura 2 ^[Para sistematização, baseei-me no texto de Almeida, Ribeiro e Bastos [-@almeida2022analise], que mostra as coalizões já mapeadas para a Política Nacional de Aids, e adenso a análise para a adaptação a partir da Leitura das Atas das Reuniões Ordinárias e Extraordinárias da Comissão Nacional de Incorporação de Tecnologias no Sistema Único de Saúde. Onde a coalizão A é a mais forte nesse contexto, e a D tem o inverso da anterior verdadeiro. Ver @ms_ata_49_2016; @ms_ata_52_2017; @ms_ata_55_2017; @ms_ata_62_2017; @ms_ata_104_2017], convergem na defesa de sua incorporação como forma de ampliar o repertório preventivo.  
+
+\begin{table}[H]
+\centering
+\caption{Síntese das crenças ou axiomas fundamentais das coalizões de defesa dentro do subsistema do HIV/Aids e PrEP no Brasil}
+\footnotesize
+
+\begin{tabularx}{\textwidth}{p{4cm} X X}
+\toprule
+\textbf{Coalizão de Defesa} & \textbf{Crenças} & \textbf{Estratégias} \\
+\midrule
+
+[A] OSC, ONGs, Comunitárias – Grupos homossexuais, ABIA, GAPA, Pela VIDDA e grupos religiosos 
+&
+Ao longo dos últimos anos, a ABIA especializou-se em advocacy, com foco no acompanhamento das políticas públicas, na formulação de projetos de educação e prevenção ao HIV e à AIDS e no acesso à informação em HIV e AIDS.
+&
+Integrar diferentes atores sociais a fim de estabelecer pressão e influência política a partir do auxílio mútuo entre os grupos.
+\\
+
+[B] Força governamental-burocrática – Ministério da Saúde e capilares associados; CONITEC; ANVISA; Fiocruz 
+&
+Convergem na defesa do SUS, na proteção à vida e na base científica das decisões, mas divergem nos métodos e prioridades de execução.
+&
+Estabelecer parcerias entre os diversos setores a fim de desenvolver ações coletivas atuando por meio de rede de relações.
+\\
+
+[C] Indústrias farmacêuticas – GlaxoSmithKline Brasil; Merck Sharp \& Dohme Farmacêutica; Gilead Sciences Farmacêutica do Brasil 
+&
+Está em análise na CONITEC uma nova tecnologia de prevenção demandada por uma dessas indústrias, emergindo como possível alternativa tecnológica.
+&
+Influenciar a agenda e decisões que beneficiem os interesses das indústrias farmacêuticas, muitas vezes ao custo da saúde pública e dos pacientes.
+\\
+
+[D] Organismos Internacionais – UNAIDS; Banco Mundial; OMS 
+&
+Partem da ideia comum de que saúde é base de estabilidade, desenvolvimento e direitos humanos, mas divergem em ênfases: enquanto OMS e UNAIDS priorizam universalidade e equidade, o Banco Mundial enfatiza eficiência econômica e retorno financeiro.
+&
+Apoiar projetos e ações que visem conter a epidemia, atuando em parceria com o governo e a sociedade civil.
+\\
+
+\bottomrule
+\end{tabularx}
+
+\vspace{0.3cm}
+\footnotesize
+Fonte: Adaptado de Almeida et al. (2022) e CONITEC. \\
+Elaboração própria: Pires, R. (2025).
+
+\end{table}
+
+Esse ecossistema corresponde ao que Sabatier descreve como subsistema: uma rede densa, relativamente estável, onde especialistas, ativistas e formuladores de política partilham crenças e disputam a tradução delas em diretrizes públicas. A coalizão comunitária, marcada por um histórico de enfrentamento ao Estado desde os anos 1980, tencionou o debate  oferecendo evidências, mobilizações e enquadramentos centrados em direitos e vulnerabilidades. 
+
+Esse arranjo se encontra com o fluxo da política, marcado à época por um cenário nacional turbulento: o pós-impeachment, a gênese de um governo moralista-conservador e germe de um esvaziamento institucional da política de HIV/Aids, materializado no rebaixamento e desfinanciamento do departamento responsável @almeida2022analise. Trata-se de um ambiente adverso, onde a própria discussão sobre sexualidade tende a ser moralizada e silenciada. Ainda assim, paradoxalmente, esse contexto reforça a importância dos *Policy Entrepreneurs*, aqueles que, segundo Kingdon, operam conexões improváveis entre fluxos e mantêm vivas determinadas pautas mesmo em ambientes hostis. A consulta pública da Conitec sobre o PCDT da PrEP, com 3.543 contribuições e apoio maciço, mostra que a disputa pelo enquadramento não estava perdida: o “humor nacional” conforme apontado na Figura 3 ^[Os dados foram minerados utilizando técnicas de Processamento de Linguagem Natural, então fora utilizado o texto como dado para contagem de frequências. Em sequência, foram agregados temporalmente em unidades semanais, reduzindo a variabilidade associada a registros diários e preservando dinâmicas temporais relevantes dado o escopo temporal balizado. As proporções das categorias da variável de humor nacional foram calculadas dentro de cada semana, garantindo comparabilidade temporal independentemente do volume absoluto de observações. Ver Consulta Pública Nº 4  [-@conitec_consultas_n42017] ], nesse caso, inclinou-se a favor da expansão de alternativas de prevenção, evidenciando que essa agenda em específico mostrou-se como um outlier em comparação com as demais, dado o padrão de engajamento desta consulta, esta em questão detém de vantagem absoluta em relação às demais daquele mesmo ano. 
+
+
+``` {r, include = FALSE,  warning = FALSE, message = FALSE}
+
+# Forçar UTF-8 (Windows)
+Sys.setlocale("LC_ALL", "pt_BR.UTF-8")
+
+
+```
+
+``` {r, echo = FALSE, message = FALSE, warning = FALSE, fig.align='center', fig.cap = paste0("Distribuição temporal da “Proxy de Humor Nacional” sobre a incorporação de tecnologias ao Sistema Único de Saúde relacionadas ao HIV/Aids em 2017.","\\\\ ","\\textbf{Elaboração própria.} Pires, R. (2026)","\\\\[0.8em] ","Fonte: Comissão Nacional de Incorporação de Tecnologias no Sistema Único de Saúde.")}
+
+# ================================
+# CONFIGURAÇÃO + DADOS + PLOT
+# ================================
+# Pacotes
+
+if (!require(pacman)) install.packages("pacman")
+pacman::p_load(tidyverse, viridis)
+
+# Ler CSV já em UTF-8
+df_mensal <- readr::read_csv(
+  "https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/cp_conitec_prop.csv",
+  locale = locale(encoding = "UTF-8"),
+  show_col_types = FALSE
+)
+
+# Garantir UTF-8 nas colunas de texto
+df_mensal <- df_mensal %>%
+  mutate(across(where(is.character), enc2utf8))
+
+# Criar labels
+df_mensal <- df_mensal %>%
+  mutate(
+    label = ifelse(
+      perc >= 35 | perc == 90,
+      paste0(round(perc, 0), "%"),
+      NA_character_
+    )
+  )
+
+# Criar períodos
+periodos <- tibble(
+  inicio = as.Date(c("2017-02-12", "2017-06-18", "2017-05-25", "2017-05-13")),
+  fim    = as.Date(c("2017-03-19", "2017-07-09", "2017-06-15", "2017-06-01")),
+  evento = c(
+    "PCDT - PrEP", 
+    "HIV", 
+    "Raltegravir", 
+    "PCDT - Aids em Crianças e Adolescentes"
+  )
+)
+
+y_max <- max(df_mensal$n, na.rm = TRUE)
+periodos$y <- y_max * c(1.15, 1.10, 0.80, 0.95) 
+
+df_mensal <- df_mensal %>% 
+  dplyr::select(-label)
+
+df_mensal <- df_mensal %>%
+  mutate(
+    label = ifelse(
+      perc >= 35 | perc == 90,
+      paste0(round(perc, 0), "%"),
+      NA
+    )
+  )
+
+# ================================
+# PLOT
+# ================================
+
+ggplot(df_mensal, aes(x = semana, y = n, fill = concordancia)) +
+  
+  geom_col(width = 5) +
+  
+  # ---- Labels apenas onde existem (remove warning) ----
+  geom_text(
+    data = dplyr::filter(df_mensal, !is.na(label)),
+    aes(label = label),
+    position = position_stack(vjust = 0.5),
+    color = NA,
+    size = 2.0
+  ) +
+  
+  geom_rect(
+    data = periodos,
+    aes(xmin = inicio, xmax = fim, ymin = -Inf, ymax = Inf),
+    inherit.aes = FALSE,
+    fill = "grey70",
+    alpha = 0.2
+  ) +
+  
+  # ---- Texto dos períodos menor ----
+  geom_text(
+    data = periodos,
+    aes(x = inicio + (fim - inicio)/2, y = y, label = evento),
+    inherit.aes = FALSE,
+    size = 3,   # reduzido
+    color = "grey30"
+  ) +
+  
+  scale_fill_viridis_d(option = "rocket") +
+  
+  scale_x_date(
+    date_breaks = "2 weeks",
+    date_labels = "%d/%m/%Y",
+    expand = expansion(mult = c(0.01, 0.05))
+  ) +
+  
+  labs(
+    x = "Tempo",
+    y = "Número de observações",
+    fill = "Concordância"
+  ) +
+  
+  theme_minimal(base_family =  "sans") +
+  theme(
+  panel.grid.major.y = element_blank(),
+  panel.grid.minor = element_blank(),
+  panel.grid.major.x = element_blank(),
+  
+  axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 0.5,
+    size = 5
+  ),
+  
+  axis.text.y = element_text(size = 6),
+  axis.title.x = element_text(size = 8),
+  axis.title.y = element_text(size = 8),
+  
+  legend.position = "bottom",
+  
+  legend.text = element_text(size = 7),
+  legend.title = element_text(size = 8),
+  
+  legend.key.height = unit(0.4, "cm"),
+  legend.key.width  = unit(0.4, "cm"),
+  
+  legend.spacing.x = unit(0.2, "cm"),
+  
+  plot.margin = margin(t = 10, r = 10, b = 25, l = 10)
+) +
+guides(
+  fill = guide_legend(
+    ncol = 2,        
+    byrow = TRUE     
+  )
+)
+
+```
+
+
+Assim, o plenário da Conitec, ao suspender inicialmente o processo por ausência de autorização formal da ANVISA, encena a dinâmica típica dos fluxos: sem a regulação, a viabilidade técnica da alternativa não estava completa, sem a segurança jurídica, a janela de oportunidade não podia se consolidar. Quando a ANVISA finalmente autorizou o uso preventivo, a convergência se consumou. Problema reconhecido, solução disponível, política favorável o suficiente, eis-te-aí a abertura da janela (*Window*, convergência dos fluxos ou *coupling*). E ela foi aproveitada: em maio de 2017, e a Portaria SCTIE/MS nº 22 oficializou a incorporação da PrEP ao SUS. Observe em amarelo na Figura 3 o momento onde a PrEP estava sendo balizada na janela de oportunidades, e o dado momento em cinza dá-se o comportamento dos mesmos indicadores após a tomada de decisão, com a técnologia já incorporada e em funcionamento. 
+
+``` {r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# ============================================================
+# PACOTES
+# ============================================================
+
+if (!require(pacman)) 
+  install.packages("pacman")
+
+pacman::p_load(tidyverse, 
+               viridis, 
+               lubridate, 
+               tidyr,
+               janitor)
+
+# ============================================================
+# DADOS
+# ============================================================
 
 
 
+df_final <- read_csv(
+  "https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/df_aids.csv",
+  locale = locale(encoding = "UTF-8"),
+  show_col_types = FALSE
+)
+
+df_long <- read_csv(
+  "https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/camaradata_long.csv",
+  locale = locale(encoding = "UTF-8"),
+  show_col_types = FALSE
+)
+
+df_conitec <- read_csv(
+  "https://raw.githubusercontent.com/ryallmeida/biopolitcs/refs/heads/main/dataframes/conitec.csv",
+  locale = locale(encoding = "UTF-8"),
+  show_col_types = FALSE
+)
+
+df_conitec <- df_conitec %>%
+  janitor::clean_names()
+
+# ============================================================
+# PREPARAÇÃO DOS DADOS
+# ============================================================
+
+# ---- Incidência
+df_final <- df_final %>%
+  mutate(
+    ano = as.integer(ano),
+    incidencia_ibge = as.numeric(gsub(",", ".", incidencia_ibge)),
+    coef_kNN = (casos_totais / populacao) * 100000
+  )
+```
+
+
+``` {r, echo = FALSE, message = FALSE, warning = FALSE}
+
+df_conitec_long <- df_conitec %>%
+  mutate(
+    ano_protocolo = year(ymd(data_protocolo)),
+    ano_decisao   = year(ymd(data_decisao)),
+    ano = coalesce(ano_protocolo, ano_decisao)
+  ) %>%
+  group_by(ano) %>%
+  summarise(
+    qtd_hiv  = sum(qtd_hiv,  na.rm = TRUE),
+    qtd_aids = sum(qtd_aids, na.rm = TRUE),
+    qtd_prep = sum(qtd_prep, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(
+    cols = starts_with("qtd"),
+    names_to = "variavel",
+    values_to = "quantidade"
+  ) %>%
+  mutate(fonte = "Conitec")
+
+
+
+df_camara<- df_long %>%
+  mutate(
+    ano = as.integer(ano),
+    fonte = "Camara"
+  )
+
+```
+
+``` {r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# ---- Base unificada
+df5 <- bind_rows(df_camara, df_conitec_long) %>%
+  mutate(grupo = paste(fonte, variavel, sep = "_"))
+
+# ============================================================
+# COEFICIENTE DE ESCALA (EIXO SECUNDÁRIO)
+# ============================================================
+
+max_barras <- max(df5$quantidade, na.rm = TRUE)
+
+df_final$incidencia_ibge <- as.double(df_final$incidencia_ibge)
+
+max_taxas <- max(
+  df_final$taxa_100k,
+  df_final$coef_kNN,
+  na.rm = TRUE
+)
+
+coef <- max_barras / max_taxas
+
+# ============================================================
+# GRÁFICO ÚNICO
+# ============================================================
+```
+
+
+``` {r, fig.height=6, fig.width=7,echo = FALSE, message = FALSE, warning = FALSE, fig.align='center', fig.cap = paste0("Mapeamento da série histórica dos Alinhamentos dos Fluxos até a Janela de Oportunidade da Profilaxia Pré-exposição no Sistema Único de Saúde","\\\\ ","\\textbf{Elaboração própria.} Pires, R. (2026)","\\\\[0.8em] ","Fonte:Ministério da Saúde; Sistema de Notificação de Agravo de Informação; Portal de dados abertos da Câmara dos Deputados.")}
+
+pacman::p_load(patchwork)
+
+df5 <- df5 %>%
+  mutate(
+    grupo = recode(grupo,
+      "Camara_qtd_aids"  = "Câmara — Aids",
+      "Camara_qtd_hiv"   = "Câmara — HIV",
+      "Camara_qtd_prep"  = "Câmara — PrEP",
+      "Conitec_qtd_hiv"  = "Conitec — HIV",
+      "Conitec_qtd_aids" = "Conitec — Aids",
+      "Conitec_qtd_prep" = "Conitec — PrEP"
+    )
+  )
+
+df5 <- df5 %>%
+  mutate(
+    grupo = factor(
+      grupo,
+      levels = c(
+        "Câmara — HIV",
+        "Câmara — Aids",
+        "Câmara — PrEP",
+        "Conitec — HIV",
+        "Conitec — Aids",
+        "Conitec — PrEP"
+      )
+    )
+  )
+
+
+# ============================================================
+# GRÁFICO — INCIDÊNCIA
+# ============================================================
+
+g_incidencia <- ggplot(df_final, aes(x = ano, y = coef_kNN)) +
+
+  annotate("rect",
+           xmin = 2016.5,
+           xmax = 2025.5,
+           ymin = -Inf,
+           ymax = Inf,
+           fill = "grey90",
+           alpha = 0.5) +
+
+  geom_line(color = "red4", linewidth = 1.2) +
+  geom_point(color = "red4", size = 1.8) +
+  scale_x_continuous(
+    breaks = seq(min(df_final$ano, na.rm = TRUE),
+                 max(df_final$ano, na.rm = TRUE), 1)
+  ) +
+
+  labs(
+    x = NULL,
+    y = "Incidência de Aids\n (100 mil hab.)"
+  ) +
+
+  theme_minimal(base_size = 13) +
+  theme(
+  panel.grid.major.y = element_blank(),
+  panel.grid.minor = element_blank(),
+  panel.grid.major.x = element_blank(),
+  
+  axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 0.5,
+    size = 5
+  ),
+  
+  axis.text.y = element_text(size = 6),
+  axis.title.x = element_text(size = 8),
+  axis.title.y = element_text(size = 8),
+  
+  legend.position = "bottom",
+  
+  legend.text = element_text(size = 7),
+  legend.title = element_text(size = 8),
+  
+  legend.key.height = unit(0.4, "cm"),
+  legend.key.width  = unit(0.4, "cm"),
+  
+  legend.spacing.x = unit(0.2, "cm"),
+  
+  plot.margin = margin(t = 10, r = 10, b = 25, l = 10)
+  )
+
+
+# ============================================================
+# GGRÁFICO — FREQUÊNCIA (BARRAS)
+# ============================================================
+
+g_frequencia <- ggplot(df5, aes(x = ano, y = quantidade, fill = grupo)) +
+
+  annotate("rect",
+           xmin = 2016.5,
+           xmax = 2025.5,
+           ymin = -Inf,
+           ymax = Inf,
+           fill = "grey90",
+           alpha = 0.5) +
+
+  geom_col(position = "stack", width = 0.8) +
+
+  scale_fill_viridis_d(
+    name = "Fluxos das Soluções\n (Policy Stream)",
+    option = "magma",
+    end = 0.95
+  ) +
+
+  scale_x_continuous(
+    breaks = seq(min(df5$ano, na.rm = TRUE),
+                 max(df5$ano, na.rm = TRUE), 1)
+  ) +
+
+  labs(
+    x = "Ano",
+    y = "Quantidade de proposições"
+  ) +
+
+  theme_minimal(base_size = 13) +
+  theme(
+  panel.grid.major.y = element_blank(),
+  panel.grid.minor = element_blank(),
+  panel.grid.major.x = element_blank(),
+  
+  axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 0.5,
+    size = 5
+  ),
+  
+  axis.text.y = element_text(size = 6),
+  axis.title.x = element_text(size = 8),
+  axis.title.y = element_text(size = 8),
+  
+  legend.position = "bottom",
+  
+  legend.text = element_text(size = 7),
+  legend.title = element_text(size = 8),
+  
+  legend.key.height = unit(0.4, "cm"),
+  legend.key.width  = unit(0.4, "cm"),
+  
+  legend.spacing.x = unit(0.2, "cm"),
+  
+  plot.margin = margin(t = 10, r = 10, b = 25, l = 10)
+  )
+
+
+# ============================================================
+# PATCHWORK — 1 COLUNA / 2 LINHAS
+# ============================================================
+
+g_incidencia /
+g_frequencia +
+plot_annotation(
+)
+
+
+```
+
+
+# Considerações finais
+
+Dados o exposto, conclui-se que a PrEP torna-se uma política pública que segundo a tipologia de Lowi, enquadra-se como uma política distributiva pois distribui benefícios concentrados, sem custos perceptíveis, e tendem a gerar consenso e baixo conflito. Adiante, as evidências provenientes das atas da Conitec pós-processo decisório, revelam que a formulação desta política seguiu muito mais a lógica do *muddling through* do que a de um desenho racional. Logo, sugere-se então para pesquisas futuras do ciclo dessa política que adotem essa óptica. Dado que essa política tem retroalimentado suas mudanças de formas incrementais no Protocolo Clínico e Diretrizes Terapeutas, reforçam assim esse movimento, mostrando que a incorporação não encerra a agenda, mas abre novos ciclos de aperfeiçoamento técnico e político. Em sequência, sugere-se também a trabalhos futuros a utilização de técnica de mineração de dados mais robustos como *web scraping* para ter-se evidências mais precisas da série histórica (*vide* Figura 2) do alinhamento de fluxos.
+
+Ao mesmo tempo, a própria justificativa social da PrEP ancorada na auto análise, na percepção de risco e no autocuidado evidencia que políticas de saúde não podem ser reduzidas a métricas epidemiológicas. Elas são atravessadas por moralidades, desigualdades e disputas simbólicas que moldam sua legitimidade e alcance, dando mote à análise de sua dimensão sociopolítica. 
+
+Dado ao exposto, a limitação central, contudo, reside na dependência do que se deixa ver nas atas: elas captam apenas parte das tensões, silenciando conflitos, pressões externas e nuances das negociações informais. Ainda assim, sugere-se estudos de abordagem qualitativa para descrever melhor o fenômeno, permitindo reconhecer que a política só se torna real quando técnica, Estado e sociedade se friccionam e essa fricção, longe de ser um problema, torna-se justamente o motor do avanço
 
 # Agradecimentos
 
